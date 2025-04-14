@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cuéntanos tus gustos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Cuéntanos tus gustos</h1>
+    </header>
+    <main>
+        <form method="POST">
+            <h3>Selecciona tus géneros favoritos (al menos 3):</h3>
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+            <div class="generos-cuestionario">
+                {% for genero in generos %}
+                    <label>
+                        <input type="checkbox" name="generos" value="{{ genero }}"> {{ genero | capitalize }}
+                    </label>
+                {% endfor %}
+            </div>
+            <button type="submit">Ver recomendaciones</button>
+        </form>
+    </main>
+</body>
+</html>

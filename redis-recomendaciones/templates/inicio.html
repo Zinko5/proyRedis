@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>¿Quién está viendo?</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Streaming - ¿Quién está viendo?</h1>
+    </header>
+    <main>
+        <div class="usuarios">
+            {% for usuario in usuarios %}
+                <div class="usuario-container">
+                    <form method="POST" action="/recomendaciones">
+                        <button type="submit" name="user_id" value="{{ usuario.id }}" class="usuario">
+                            <img src="{{ usuario.icono }}" alt="{{ usuario.nombre }}" class="icono">
+                            {{ usuario.nombre }} {{ usuario.apellido }}
+                        </button>
+                    </form>
+                    <button class="eliminar-usuario" data-id="{{ usuario.id }}" data-nombre="{{ usuario.nombre }} {{ usuario.apellido }}" title="Eliminar usuario">🗑️</button>
+                </div>
+            {% endfor %}
+            <a href="/crear_cuenta" class="crear-cuenta">+ Crear cuenta</a>
+        </div>
+    </main>
+    <script>
+        document.querySelectorAll('.eliminar-usuario').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-id');
+                const userName = this.getAttribute('data-nombre');
+                if (confirm(`¿Seguro que quieres eliminar el usuario ${userName}?`)) {
+                    fetch('/eliminar_usuario', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id: userId })
+                    }).then(response => response.json())
+                      .then(data => {
+                          if (data.success) {
+                              window.location.reload(); // Recargar página
+                          } else {
+                              alert('Error al eliminar usuario');
+                          }
+                      });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
